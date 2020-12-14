@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import "./database";
+import "dotenv/config";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server";
 import CategoryResolver from "./graphql/category/CategoryResolver";

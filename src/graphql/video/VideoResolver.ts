@@ -1,9 +1,6 @@
 import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import Video from "./Video";
-import Crypto from "crypto";
-
-const videos: Video[] = [];
-
+import VideoSchema from "../../database/schemas/Video";
 @InputType()
 class VideoInput {
 	@Field()
@@ -17,19 +14,13 @@ class VideoInput {
 class VideoResolver {
 	@Query(() => [Video])
 	async videos() {
+		const videos = await VideoSchema.find();
 		return videos;
 	}
 
 	@Mutation(() => Video)
 	async createVideos(@Arg("videoInput") videoInput: VideoInput) {
-		const id = Crypto.randomBytes(48).toString("hex");
-
-		const video = {
-			...videoInput,
-			_id: id,
-		};
-
-		videos.push(video);
+		const video = await VideoSchema.create(videoInput);
 		return video;
 	}
 }

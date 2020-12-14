@@ -1,8 +1,6 @@
 import { Arg, Field, InputType, Mutation, Query, Resolver } from "type-graphql";
 import Category from "./Category";
-import Crypto from "crypto";
-
-const categories: Category[] = [];
+import CategorySchema from "../../database/schemas/Category";
 
 @InputType()
 class CategoryInput {
@@ -16,19 +14,13 @@ class CategoryInput {
 class CategoryResolver {
 	@Query(() => [Category])
 	async categories() {
+		const categories = await CategorySchema.find();
 		return categories;
 	}
 
 	@Mutation(() => Category)
 	async createCategory(@Arg("categoryInput") categoryInput: CategoryInput) {
-		const id = Crypto.randomBytes(48).toString("hex");
-
-		const category = {
-			...categoryInput,
-			_id: id,
-		};
-
-		categories.push(category);
+		const category = await CategorySchema.create(categoryInput);
 		return category;
 	}
 }
